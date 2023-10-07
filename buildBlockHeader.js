@@ -6,11 +6,11 @@ import getTimestamp from "./getTimestamp.js";
 import calculateNBits from "./calculateNBits.js";
 
 
-const buildBlockHeader=(block)=>{
+const buildBlockHeader=(block,extraNonce)=>{
     const baseReward=(50/(2**(parseInt(block.height/210000))))*100000000
     const reward=baseReward+calculateFees(block.transactions)
     console.log(reward)
-    const coinBaseTransaction=generateCoinbaseTransaction(block.height,10,reward)
+    const coinBaseTransaction=generateCoinbaseTransaction(block.height,extraNonce,reward)
     console.log(coinBaseTransaction)
     block.transactions.unshift(coinBaseTransaction);
     const transactionHashes = block.transactions.map(transaction => transaction.hash);

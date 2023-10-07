@@ -6,26 +6,44 @@ import { version } from "os";
 import { Server } from "socket.io";
 import modifyBlockHeader from "./modifyBlockHeader.js"; 
 
+const sendHeader=(socket)=>{
+  if (maxNonce < nonce+nonceAllocation) {
+    extraNonce++
+    nonce=0
+    header=buildBlockHeader(block,extraNonce)
+  }
+  var result = modifyBlockHeader(header,nonce,nonceAllocation,maxNonce)
+  nonce += nonceAllocation
+  console.log(result)
+  socket.emit("header", { "header" : result  })
+}
+
 
 const maxNonce = 2**32
-var nonceAllocation=2**20
+var nonceAllocation=2**18
 var nonce=0
+var extraNonce=0
 const res=await getBlockTemplate()
 const block=res.data.result
-var header=buildBlockHeader(block)
+var header=buildBlockHeader(block,extraNonce)
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 io.on('connection', (socket) => {
-  var result = modifyBlockHeader(header,nonce,nonceAllocation,maxNonce)
-  nonce += nonceAllocation
-  
-  socket.emit("hello", { "a" : result  })
-
+  sendHeader(socket)
+  socket.on('reallocate', () => {
+    sendHeader(socket)
+  });
+  socket.on('solution', (args) => {
+    console.log(args["solution"]);
+    io.emit('end');
+    io.close();
+  });
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
+
 });
 
 // io.on('', (socket) => {

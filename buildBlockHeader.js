@@ -18,7 +18,7 @@ const buildBlockHeader=(block,extraNonce)=>{
     console.log("Merkle Root Hash: ",merkleRootHash)
 
     const header={
-        version:"02000000",
+        version:block.version.toString(16),
         previousblockhash:block.previousblockhash,
         merkleroothash:merkleRootHash,
         time:getTimestamp(),

@@ -9,14 +9,13 @@ import calculateNBits from "./calculateNBits.js";
 const buildBlockHeader=(block,extraNonce)=>{
     const baseReward=(50/(2**(parseInt(block.height/210000))))*100000000
     const reward=baseReward+calculateFees(block.transactions)
-    console.log(reward)
+    console.log("Reward:",reward, "Satoshi")
     const coinBaseTransaction=generateCoinbaseTransaction(block.height,extraNonce,reward)
-    console.log(coinBaseTransaction)
+    console.log("Generated CoinBase Transaction:",coinBaseTransaction)
     block.transactions.unshift(coinBaseTransaction);
     const transactionHashes = block.transactions.map(transaction => transaction.hash);
     const merkleRootHash=calculateMerkleRoot(transactionHashes)
-    console.log(merkleRootHash)
-    console.log("merkleRootHash")
+    console.log("Merkle Root Hash: ",merkleRootHash)
 
     const header={
         version:"02000000",
@@ -25,7 +24,7 @@ const buildBlockHeader=(block,extraNonce)=>{
         time:getTimestamp(),
         nbits:calculateNBits(block.target).toString('hex')
     }
-    console.log(header)
+    console.log("Block Header:",header)
     return header
 }
 export default buildBlockHeader

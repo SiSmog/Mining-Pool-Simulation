@@ -1,7 +1,7 @@
 import convertToHex from "./convertToHex.js";
 import sha256 from "./sha256.js";
 
-var minLeadingZeroes=5;
+var minLeadingZeroes=6;
 var resultingHash=""
 
 
@@ -37,7 +37,7 @@ const evaluateHash=(hash)=> {
         break;
       }
     }
-    if(leadingZeroes>=4){
+    if(leadingZeroes>=5){
       console.log(hash);
   }
     if(leadingZeroes>=minLeadingZeroes){
